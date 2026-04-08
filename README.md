@@ -24,3 +24,6 @@ HTML/CSS/JavaScriptのみで動く、完全ローカルの寮生活交流記録�
 - `dorm_tomokore_local_app_data`
 - `dorm_tomokore_local_backup_meta`
 
+
+## 開発チェック
+- 競合マーカー確認: `./scripts/check-conflict-markers.sh`
