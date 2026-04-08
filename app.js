@@ -111,8 +111,17 @@ function pickRandomMany(list, min, max) {
   return pool.slice(0, size);
 }
 
-function randomResidentNickname() {
-  return `${pickRandom(RANDOM_NICKNAME_HEAD)}${pickRandom(RANDOM_NICKNAME_TAIL)}`;
+function randomResidentNickname(usedNames, roomNumber) {
+  for (let i = 0; i < 8; i++) {
+    const candidate = `${pickRandom(RANDOM_NICKNAME_HEAD)}${pickRandom(RANDOM_NICKNAME_TAIL)}`;
+    if (!usedNames.has(candidate)) {
+      usedNames.add(candidate);
+      return candidate;
+    }
+  }
+  const fallback = `住人${roomNumber}`;
+  usedNames.add(fallback);
+  return fallback;
 }
 
 function randomResidentComment() {
@@ -122,6 +131,7 @@ function randomResidentComment() {
 function generateDormTemplate({ floors, roomsPerFloor, density }) {
   const residents = [];
   const floorConfigs = [];
+  const usedNames = new Set();
   for (let f=1; f<=floors; f++) {
     const rooms = [];
     for (let r=1; r<=roomsPerFloor; r++) {
@@ -131,7 +141,7 @@ function generateDormTemplate({ floors, roomsPerFloor, density }) {
       if (occupied) {
         const resident = {
           id: uid('res'),
-          nickname: randomResidentNickname(),
+          nickname: randomResidentNickname(usedNames, roomNumber),
           roomNumber,
           gradeOrRole: pickRandom(GRADES),
           hobbyTags: pickRandomMany(HOBBIES, 1, 3),
